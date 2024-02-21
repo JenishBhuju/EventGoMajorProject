@@ -1,24 +1,80 @@
-<!-- organizer/templates/organizer/view_messages.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Messages</title>
-</head>
-<body>
-    <h1>Messages</h1>
-    <ul>
+{% extends 'base.html' %}
+
+{% block title %}View Message{% endblock %}
+
+{% block content %}
+    <style>
+        /* body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+} */
+
+.msg{
+    text-align: center;
+    color: #333;
+}
+
+.listulmsg {
+    list-style-type: none;
+    padding: 0;
+}
+
+.listmsg {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+strong {
+    color: #555;
+}
+
+.message-header {
+    margin-bottom: 10px;
+}
+
+.message-sender {
+    font-weight: bold;
+}
+
+.message-event {
+    font-style: italic;
+    color: #666;
+}
+
+.message-content {
+    margin-top: 10px;
+    color: #333;
+}
+
+.message-timestamp {
+    color: #888;
+    font-size: 0.9em;
+}
+
+    </style>
+    <h1 class="msg">Messages</h1>
+    <ul class="listulmsg">
         {% for message in messages %}
-        <li>
-            <strong>From:</strong> {{ message.sender }}<br>
-            <strong>Event:</strong> {{ message.event.title }}<br>
-            <strong>Content:</strong> {{ message.content }}<br>
-            <strong>Sent:</strong> {{ message.timestamp }}
+        <li class="listmsg">
+            <div class="message-header">
+                <span class="message-sender"><strong>From:</strong> {{ message.sender }}</span><br>
+                <span class="message-event"><strong>Event:</strong> {{ message.event.title }}</span>
+            </div>
+            <div class="message-content">
+                <strong>Content:</strong> {{ message.content }}<br>
+                <strong>Sent:</strong> {{ message.timestamp }}
+            </div>
         </li>
         {% empty %}
         <li>No messages</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+
+    {% endblock %}

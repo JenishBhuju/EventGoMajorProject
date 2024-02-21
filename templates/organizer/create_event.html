@@ -50,11 +50,7 @@
         background-color: #0056b3;
     }
 
-    /* #map {
-        height: 400px; 
-        width: 100%; 
-        margin-bottom: 20px;
-    } */
+   
 </style>
 
 <div class="form-container">
@@ -91,25 +87,37 @@
                 </div>
             {% endfor %}
         </div>
-        <!-- <div id="map"></div> -->
+        <div id="map" style="height: 400px; width: 100%;"></div>
+        <div style="display:none;">
+            {{ form.latitude }}
+            {{ form.longitude }}
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
 
-<!-- Include Leaflet JavaScript
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    var map = L.map('map').setView([28.3949, 84.1240], 7, { zoomControl: false }); // Centered on Nepal, zoom level 7, without zoom control
+    var mymap = L.map('map').setView([51.505, -0.09], 13); // Set to your default location
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    var marker = L.marker([28.3949, 84.1240]).addTo(map);
-    map.on('click', function(e) {
-        marker.setLatLng(e.latlng);
-        document.getElementById('id_latitude').value = e.latlng.lat;
-        document.getElementById('id_longitude').value = e.latlng.lng;
-    });
-</script> -->
-
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mymap);
+    var marker;
+    function onMapClick(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+        // Update marker to new position
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(mymap);
+        }
+        // Update form fields
+        document.getElementById('id_latitude').value = lat;
+        console.log(lat);
+        document.getElementById('id_longitude').value = lng;
+        console.log(lng);
+    }
+    mymap.on('click', onMapClick);
+</script>
 
 {% endblock %}

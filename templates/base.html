@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Website</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- Add your CSS stylesheets and other meta tags here -->
     <style>
         /* Add your custom CSS styles here */
@@ -84,6 +86,7 @@
         <li><a href="{% url 'update-preferences' %}">Preferences</a></li>
         <li><a href="{% url 'event-search' %}">Search</a></li>
         <li><a href="{% url 'view-messages' %}">Message</a></li>
+        <li><a href="{% url 'map-show' %}">Map</a></li>
         {% endif %}
     </ul>
     <div>

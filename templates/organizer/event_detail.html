@@ -52,11 +52,25 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+    .btn-secondary {
+    background-color: #6c757d; /* A grayish color */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* Removes underline from link */
+}
+
+.btn-secondary:hover {
+    background-color: #545b62; /* A slightly darker gray for hover effect */
+}
+
 
     /* Image styles */
     .event-image {
         width: 500px; /* Set the width to your desired fixed size */
-        height: auto; /* Maintain aspect ratio */
+        height: 600%; /* Maintain aspect ratio */
     }
     h1{
         text-align: center;
@@ -96,5 +110,7 @@
     {% if request.user.is_authenticated and request.user.is_organizer %}
     <a href="{% url 'update-event' event.id %}" class="btn btn-primary">Update</a>
 {% endif %}
+<a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+
 </div>
 {% endblock %}

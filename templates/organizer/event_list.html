@@ -8,7 +8,7 @@
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust minmax values as needed */
                 gap: 20px; /* Adjust the gap between cards */
-                max-width: 1000px; 
+                max-width:90%;
                 margin: 0 auto; 
             }
 
@@ -63,6 +63,12 @@
         h1{
             text-align: center;
         }
+        h3 {
+            text-align: center;
+            font-family: 'Great Vibes', cursive; /* Apply the "Great Vibes" font */
+            font-size: 24px; /* Adjust the font size as needed */
+            color: #663399; /* A fancy color, but choose what fits your design */
+        }
     </style>
 </head>
 <body>
@@ -86,6 +92,8 @@
 
             </div>
         </div>
+        {% empty %}
+        <h3>Let's create a fantastic event.Let's go......................</h3>
     {% endfor %}
     </div>
 {% endblock %}

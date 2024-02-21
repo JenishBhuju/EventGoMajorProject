@@ -2,9 +2,11 @@ from django import forms
 from .models import Event, EventCategory, Preference, UserPreference
 
 class EventForm(forms.ModelForm):
+    latitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    longitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Event
-        fields = ['title', 'description', 'logo', 'date', 'address','categories']
+        fields = ['title', 'description', 'logo', 'date', 'address','categories','latitude','longitude']
         widgets = {
             'categories': forms.CheckboxSelectMultiple(),
             'date': forms.DateInput(attrs={'type': 'date'})

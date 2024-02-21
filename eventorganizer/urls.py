@@ -7,4 +7,5 @@ urlpatterns = [
     path('detail/<int:event_id>/', views.event_detail, name='event-detail'),
     path('search/', views.event_search, name='event-search'),
     path('messages/', views.view_messages, name='view-messages'),
+    path('map/', views.map_show, name='map-show'),
 ]

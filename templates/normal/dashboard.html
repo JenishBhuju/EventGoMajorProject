@@ -8,7 +8,7 @@
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust minmax values as needed */
                 gap: 20px; /* Adjust the gap between cards */
-                max-width: 1000px; 
+                max-width: 90%; 
                 margin: 0 auto; 
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
@@ -63,6 +63,13 @@
         h2{
             margin-left: 10px;
         }
+        h3 {
+            text-align: center;
+            font-family: 'Great Vibes', cursive; /* Apply the "Great Vibes" font */
+            font-size: 24px; /* Adjust the font size as needed */
+            color: #663399; /* A fancy color, but choose what fits your design */
+        }
+
     </style>
 <div class="maincontainer">
 <h1>Available Event List</h1>
@@ -83,9 +90,12 @@
                 <a href="{% url 'event-detail' event.id %}" class="btn btn-primary">View Details</a>
             </div>
         </div>
+        {% empty %}
+        <h3>There are no events that are available right now according to your taste.......</h3>
     {% endfor %}
 </div>
-
+<br>
+<br>
 <h2>All Events :</h2>
 <div class="card-container">
     {% for event in unmatched_events %}
