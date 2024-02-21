@@ -1,0 +1,24 @@
+<!-- organizer/templates/organizer/view_messages.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Messages</title>
+</head>
+<body>
+    <h1>Messages</h1>
+    <ul>
+        {% for message in messages %}
+        <li>
+            <strong>From:</strong> {{ message.sender }}<br>
+            <strong>Event:</strong> {{ message.event.title }}<br>
+            <strong>Content:</strong> {{ message.content }}<br>
+            <strong>Sent:</strong> {{ message.timestamp }}
+        </li>
+        {% empty %}
+        <li>No messages</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

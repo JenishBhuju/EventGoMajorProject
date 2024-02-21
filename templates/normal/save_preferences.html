@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Save Preferences{% endblock %}
+{% block content %}
+    
+    <style>
+        .preferences {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .preference-item {
+            width: 200px; /* Adjust the width as needed */
+            margin: 10px;
+            text-align: center;
+            font-family: Arial, sans-serif; /* Use any desired font family */
+            font-size: 16px; /* Adjust the font size as needed */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the items horizontally */
+        }
+        .preference-img {
+            width: 150px; /* Adjust the width as needed */
+            height: 150px; /* Adjust the height as needed */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image fills the circle without stretching */
+            margin: 0 auto 10px; /* Centers the image and adds space below */
+            border: 2px solid #fff; /* Adds a white border around the image */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Adds a shadow effect */
+        }
+        .preference-name {
+            color: #333; /* Sets the color of the preference name */
+            font-weight: bold; /* Makes the preference name bold */
+            margin-bottom: 5px; /* Add space between the image and name */
+        }
+        .checkbox {
+            margin-top: auto; /* Align the checkbox to the bottom */
+        }
+        .submit-btn {
+            background-color: #007bff; /* Set the background color */
+            color: #fff; /* Set the text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Add padding */
+            font-size: 18px; /* Set the font size */
+            border-radius: 5px; /* Add border radius */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s ease; /* Add smooth transition */
+            margin-left: 50px;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3; /* Darker background color on hover */
+        }
+    </style>
+
+    <h1 style="text-align: center;">Save Preferences</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="preferences">
+            {% for preference in preferences %}
+                <div class="preference-item">
+                    {% if preference.img %}
+                        <img class="preference-img" src="{{ preference.img.url }}" alt="{{ preference.name }}">
+                    {% endif %}
+                    <label class="preference-name" for="preference_{{ preference.id }}">{{ preference.name }}</label>
+                    <input type="checkbox" class="checkbox" name="preferences" id="preference_{{ preference.id }}" value="{{ preference.id }}">
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="submit-btn">Save</button>
+    </form>
+    {% endblock %}

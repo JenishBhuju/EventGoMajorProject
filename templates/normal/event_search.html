@@ -1,0 +1,152 @@
+<!-- event_search.html -->
+{% extends 'base.html' %}
+
+{% block title %}Event Search{% endblock %}
+
+{% block content %}
+<style>
+   .card-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust minmax values as needed */
+                gap: 20px; /* Adjust the gap between cards */
+                max-width: 1000px; 
+                margin: 0 auto; 
+            }
+
+.card {
+    /* Remove fixed width */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add some shadow for depth */
+    margin-bottom: 20px;
+    margin-left: 2%;
+    margin-right: 2%; /* Add margin-bottom to create space between cards */
+}
+
+.card img.card-img-top {
+    height: 200px; /* Set the height of the card images */
+    object-fit: cover; /* Maintain aspect ratio and fill container */
+    width: 100%; /* Ensure the width takes up the full space */
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+    .search-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        margin-right: 10px;
+    }
+
+    .category-select {
+        padding: 10px;
+        border-radius: 0;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        background-color: #f8f9fa;
+        color: #495057;
+        outline: none;
+        margin-right: 10px;
+    }
+
+    .search-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 0 5px 5px 0;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        outline: none;
+    }
+
+    .search-button:hover {
+        background-color: #0056b3;
+    }
+    .errormsg {
+    text-align: center; /* Center the text */
+    font-weight: bold; /* Make the text bold */
+    font-size: 22px; /* Set the font size */
+}
+
+</style>
+<h1 style="text-align: center;">Event Search</h1>
+
+<div class="search-container">
+    <form class="search-form" method="GET" action="{% url 'event-search' %}">
+        <input type="text" name="q" class="search-input" placeholder="Search by title or description">
+        <select name="category" class="category-select">
+            <option value="" selected>All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+</div>
+<div class="card-container"> <!-- Use a div instead of ul for card container -->
+    {% for event in events %}
+    <div class="card">
+        {% if event.logo %}
+            <img src="{{ event.logo.url }}" class="card-img-top" alt="{{ event.title }} Logo">
+        {% else %}
+            <!-- Placeholder image if no logo available -->
+            <img src="placeholder.jpg" class="card-img-top" alt="Placeholder">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ event.title }}</h5>
+            <p class="card-text">{{ event.description }}</p>
+            <!-- You can add more details here -->
+            <a href="{% url 'event-detail' event.id %}" class="btn btn-primary">View Details</a>
+
+        </div>
+    </div>
+    {% empty %}
+        <p class="errormsg">No events found</p>
+    {% endfor %}
+</div>
+{% endblock %}
