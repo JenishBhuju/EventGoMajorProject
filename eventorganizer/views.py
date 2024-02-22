@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 # import paho.mqtt.publish as publish
 import folium
 from folium import GeoJson
-from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
+import numpy as np
 import json
 
 @login_required
@@ -84,70 +85,75 @@ def view_messages(request):
     return render(request, 'normal/messages.html', {'messages': messages})
 
 def map_show(request):
+
     if request.method == 'POST':
         place_name = request.POST.get('place_name')
         place_name = place_name.lower()
-        geolocator = Nominatim(user_agent="municipality_geolocation", timeout=10)
-        location = geolocator.geocode(f'{place_name}, Nepal')
-        if location:
-            location = [(location.latitude), (location.longitude)]
-            print(location)
-            try:
-                json_file_path = 'media/coordinates.json'
-                # Open the JSON file
-                with open(json_file_path, 'r') as file:
-                    # Load the JSON data from the file
-                    coordinates_data = json.load(file)
-                coordinates = coordinates_data[place_name]["Coordinates"]
-                location_geojson = {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "properties": {},
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": [coordinates]
-                            }
+        try:
+            json_file_path = 'media/coordinates.json'
+            with open(json_file_path, 'r') as file:
+                coordinates_data = json.load(file)
+            coordinates = coordinates_data[place_name]["Coordinates"]
+            location_geojson = {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [coordinates]
                         }
-                    ]
-                }
-                # Create a map of give place name
-                location_map = folium.Map(location=location, zoom_start=13, tiles='OpenStreetMap', control_scale=True)
-                # Set the map background color and apply grayscale filter
-                location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { background-color: skyblue; filter: grayscale(60%); }</style>'))
-                # location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
-                # Add your GeoJson layer to the map
-                GeoJson(location_geojson, name=place_name).add_to(location_map)
-                # GeoJson(location_geojson,
-                #         name=place_name,
-                #         style_function=lambda x: {
-                #         'fillColor': 'green',  # Change the fill color
-                #         'color': 'red',  # Change the border color
-                #         'weight': 2,  # Change the border width
-                #         'fillOpacity': 0.5  # Change the fill opacity
-                #         }).add_to(location_map)
-            except:
-                # Create a map of Kathmandu
-                print("=========except=========")
-                location_map = folium.Map(location=location, zoom_start=13, control_scale=True)
-            # Example markers for three different locations
-            # location1_coords = [27.7048, 85.3079]
-            # location2_coords = [27.7172, 85.3270]
-            # location3_coords = [27.6951, 85.3239]
-            # folium.Marker(location=location1_coords, popup=folium.Popup('Location 1', parse_html=True, show=True, permanent=True)).add_to(location_map)
-            # folium.Marker(location=location2_coords, popup=folium.Popup('Location 2', parse_html=True, show=True, permanent=True)).add_to(location_map)
-            # folium.Marker(location=location3_coords, popup=folium.Popup('Location 3', parse_html=True, show=True, permanent=True)).add_to(location_map)
-            map_html = location_map._repr_html_()
-            context = {'map_html': map_html}
-            return render(request, 'normal/map.html', context)
-    else:
-        location = [27.45, 85.20]
-        location_map = folium.Map(location=location, zoom_start=8, tiles='OpenStreetMap', control_scale=True)
-        location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
+                    }
+                ]
+            }
+            data_array = np.array(coordinates)
+            mean = np.mean(data_array, axis=0)
+            reverse = mean[::-1]
+            place_location = reverse.tolist()
+            location_map = folium.Map(location=place_location, zoom_start=10, tiles='OpenStreetMap', control_scale=True)
+            location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { background-color: skyblue; filter: grayscale(60%); }</style>'))
+            GeoJson(
+                    location_geojson,
+                    name=place_name,
+                    style_function=lambda feature: {
+                        'fillColor': 'skyblue',
+                        'color': 'red',
+                        'weight': 3,
+                        'fillOpacity': 0.33,
+                    },
+                ).add_to(location_map)
+        except:
+            return redirect("map-show")
+        
+        event_locations = Event.objects.all()
+        for i in event_locations:
+            title = i.title
+            description = i.description
+            latitude = i.latitude
+            longitude = i.longitude
+            event_coordinate = [latitude, longitude]
+            distance = geodesic(place_location, event_coordinate).km
+            radius_in_km = 100
+            if distance <= radius_in_km:
+                folium.Marker(location=event_coordinate, popup=folium.Popup(f"{title} : {description}", parse_html=True, show=True, permanent=True)).add_to(location_map)
         map_html = location_map._repr_html_()
         context = {'map_html': map_html}
         return render(request, 'normal/map.html', context)
     
-
+    else:
+        location = [28.267940179261373, 84.254150390625]
+        location_map = folium.Map(location=location, zoom_start=7, tiles='OpenStreetMap', control_scale=True)
+        location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
+        locations = Event.objects.all()
+        for i in locations:
+            title = i.title
+            description = i.description
+            latitude = i.latitude
+            longitude = i.longitude
+            location_coords = [latitude, longitude]
+            folium.Marker(location=location_coords, popup=folium.Popup(f"{title} : {description}", parse_html=True, show=True, permanent=True)).add_to(location_map)
+        map_html = location_map._repr_html_()
+        context = {'map_html': map_html}
+        return render(request, 'normal/map.html', context)
     

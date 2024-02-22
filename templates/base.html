@@ -51,7 +51,7 @@
             bottom: 0;
             width: 100%;
             position:fixed;
-            z-index: 1; /* Ensure footer is above other content */
+            z-index: 1000; /* Ensure footer is above other content */
         }
         main {
            
@@ -67,6 +67,12 @@
         }
         .username{
             margin-right: 20px;
+        }
+        .main-container {
+            width: 900px; /* Medium width */
+            height: 900px; /* Medium height */
+            margin: auto; /* Center the map */
+            margin-top: 6px;
         }
     </style>
 </head>
@@ -99,8 +105,12 @@
 
 <!-- Your main content goes here -->
 <main>
-    {% block content %}
-    {% endblock %}
+    
+    <div class="main-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
 </main>
 
 <footer>
