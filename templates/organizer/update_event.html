@@ -121,7 +121,7 @@
             {{ form.longitude }}
         </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Submit Update</button>
         <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
     </form>
     
@@ -130,7 +130,7 @@
 <script>
     var latitude = parseFloat('{{ form.latitude.value|default_if_none:"0" }}');
     var longitude = parseFloat('{{ form.longitude.value|default_if_none:"0" }}');
-    var mymap = L.map('mapshow').setView([latitude, longitude], 14); // Set to your default location
+    var mymap = L.map('mapshow').setView([latitude, longitude], 13); // Set to your default location
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(mymap);

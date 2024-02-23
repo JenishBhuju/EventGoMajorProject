@@ -59,7 +59,7 @@ def event_detail(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     is_organizer = request.user.is_organizer
     event_coordinate = [event.latitude, event.longitude]
-    location_map = folium.Map(location=event_coordinate, zoom_start=14, tiles='OpenStreetMap', control_scale=True)
+    location_map = folium.Map(location=event_coordinate, zoom_start=13, tiles='OpenStreetMap', control_scale=True)
     location_map.get_root().html.add_child(folium.Element())
     folium.Marker(location=event_coordinate, popup=folium.Popup(f"{event.title} : {event.description}", parse_html=True, show=True, permanent=True)).add_to(location_map)
     map_html = location_map._repr_html_()
@@ -147,8 +147,8 @@ def map_show(request):
         return render(request, 'normal/map.html', context)
     
     else:
-        location = [28.267940179261373, 84.254150390625]
-        location_map = folium.Map(location=location, zoom_start=7, tiles='OpenStreetMap', control_scale=True)
+        location = [28.150875468598606, 84.462890625]
+        location_map = folium.Map(location=location, zoom_start=8, tiles='OpenStreetMap', control_scale=True)
         location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
         locations = Event.objects.all()
         for i in locations:
