@@ -75,6 +75,11 @@
     h1{
         text-align: center;
     }
+    .mapshow{
+        border-color: #007bff;
+        height: 500px;
+        width: auto;
+    }
 </style>
 
 <div class="form-container">
@@ -110,6 +115,10 @@
     {% if request.user.is_authenticated and request.user.is_organizer %}
     <a href="{% url 'update-event' event.id %}" class="btn btn-primary">Update</a>
 {% endif %}
+
+<div class="mapshow">
+
+</div>
 <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
 
 </div>

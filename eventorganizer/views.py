@@ -6,7 +6,7 @@ from .models import Category, Event,Preference
 from .forms import EventForm,UserPreferenceForm
 from django.contrib.auth.decorators import login_required  
 from django.shortcuts import render, redirect, get_object_or_404
-# import paho.mqtt.publish as publish
+import paho.mqtt.publish as publish
 import folium
 from folium import GeoJson
 from geopy.distance import geodesic
@@ -22,12 +22,12 @@ def create_event(request):
             event.user_id = request.user
             event.save()
 
-            # normal_users = CustomUser.objects.filter(user_type='normal')
-            # for user in normal_users:
-            #     message_content = f"New event created: {event.title}"
-            #     message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
+            normal_users = CustomUser.objects.filter(user_type='normal')
+            for user in normal_users:
+                message_content = f"New event created: {event.title}"
+                message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
 
-            #     publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
+                publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
 
 
             form._save_categories(event)
