@@ -76,10 +76,12 @@
         text-align: center;
     }
     .mapshow{
-        border-color: #007bff;
         height: 500px;
         width: auto;
+        background-color: #f5d47a;
+        margin-bottom: 18px;
     }
+    
 </style>
 
 <div class="form-container">
@@ -112,13 +114,14 @@
             {% endfor %}
         </ul>
     </div>
+
+    <div class="mapshow">
+
+    </div>
+
     {% if request.user.is_authenticated and request.user.is_organizer %}
     <a href="{% url 'update-event' event.id %}" class="btn btn-primary">Update</a>
 {% endif %}
-
-<div class="mapshow">
-
-</div>
 <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
 
 </div>
