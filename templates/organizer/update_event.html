@@ -68,12 +68,14 @@
         width: 500px; /* Set the width to your desired fixed size */
         height: 600px; /* Maintain aspect ratio */
     }
+
     .mapshow{
-        height: 500px;
-        width: auto;
+        height: 400px;
+        width: 100%;
         background-color: #f5d47a;
         margin-bottom: 8px;
     }
+
 </style>
 
 <div class="form-container">
@@ -112,12 +114,47 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="mapshow">
 
+        <div class="mapshow" id="mapshow"></div>
+        <div style="display:none;">
+            {{ form.latitude }}
+            {{ form.longitude }}
         </div>
+
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
     </form>
     
 </div>
+
+<script>
+    var latitude = parseFloat('{{ form.latitude.value|default_if_none:"0" }}');
+    var longitude = parseFloat('{{ form.longitude.value|default_if_none:"0" }}');
+    var mymap = L.map('mapshow').setView([latitude, longitude], 14); // Set to your default location
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mymap);
+
+    var eventTitle = "{{ form.title|escapejs }}";
+    var eventDescription = "{{ form.description|escapejs }}";
+    var marker = L.marker([latitude, longitude]).addTo(mymap);
+
+    function onMapClick(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+        // Update marker to new position
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(mymap);
+        }
+        // Update form fields
+        document.getElementById('id_latitude').value = lat;
+        console.log(lat);
+        document.getElementById('id_longitude').value = lng;
+        console.log(lng);
+    }
+    mymap.on('click', onMapClick);
+</script>
+
 {% endblock %}

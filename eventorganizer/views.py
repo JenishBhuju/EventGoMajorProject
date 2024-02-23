@@ -6,7 +6,7 @@ from .models import Category, Event,Preference
 from .forms import EventForm,UserPreferenceForm
 from django.contrib.auth.decorators import login_required  
 from django.shortcuts import render, redirect, get_object_or_404
-import paho.mqtt.publish as publish
+# import paho.mqtt.publish as publish
 import folium
 from folium import GeoJson
 from geopy.distance import geodesic
@@ -22,12 +22,12 @@ def create_event(request):
             event.user_id = request.user
             event.save()
 
-            normal_users = CustomUser.objects.filter(user_type='normal')
-            for user in normal_users:
-                message_content = f"New event created: {event.title}"
-                message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
+            # normal_users = CustomUser.objects.filter(user_type='normal')
+            # for user in normal_users:
+            #     message_content = f"New event created: {event.title}"
+            #     message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
 
-                publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
+            #     publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
 
 
             form._save_categories(event)
@@ -58,7 +58,12 @@ def update_event(request, event_id):
 def event_detail(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     is_organizer = request.user.is_organizer
-    return render(request, 'organizer/event_detail.html', {'event': event, 'is_organizer': is_organizer})
+    event_coordinate = [event.latitude, event.longitude]
+    location_map = folium.Map(location=event_coordinate, zoom_start=14, tiles='OpenStreetMap', control_scale=True)
+    location_map.get_root().html.add_child(folium.Element())
+    folium.Marker(location=event_coordinate, popup=folium.Popup(f"{event.title} : {event.description}", parse_html=True, show=True, permanent=True)).add_to(location_map)
+    map_html = location_map._repr_html_()
+    return render(request, 'organizer/event_detail.html', {'event': event, 'is_organizer': is_organizer, 'map_html': map_html})
 
 def event_search(request):
     query = request.GET.get('q')

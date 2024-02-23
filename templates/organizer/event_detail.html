@@ -76,7 +76,7 @@
         text-align: center;
     }
     .mapshow{
-        height: 500px;
+        height: auto;
         width: auto;
         background-color: #f5d47a;
         margin-bottom: 18px;
@@ -116,7 +116,7 @@
     </div>
 
     <div class="mapshow">
-
+        {{ map_html|safe }}
     </div>
 
     {% if request.user.is_authenticated and request.user.is_organizer %}
