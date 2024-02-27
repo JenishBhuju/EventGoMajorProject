@@ -240,8 +240,8 @@ margin: 5px 0;
               <a href="{% url 'event-detail' item.event.id %}" class="viewbutton">Details</a>
             
           </div>
+          <h4 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h4>
           <h5 class="carousel-item__details--title">{{ item.event.title }}</h5>
-          <h6 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h6>
           <h6 class="carousel-item__details--subtitle">{{ item.event.address }}</h6>
           <h6 class="carousel-item__details--subtitle">{{ item.event.date }}</h6>
         </div>
@@ -264,8 +264,8 @@ margin: 5px 0;
           <div class="controls">
             <a href="{% url 'event-detail' item.event.id %}" class="viewbutton">Details</a>
           </div>
+          <h4 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h4>
           <h5 class="carousel-item__details--title">{{ item.event.title }}</h5>
-          <h6 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h6>
           <h6 class="carousel-item__details--subtitle">{{ item.event.address }}</h6>
           <h6 class="carousel-item__details--subtitle">{{ item.event.date }}</h6>
         </div>
