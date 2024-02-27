@@ -97,8 +97,51 @@
         <li><a href="{% url 'update-preferences' %}">Preferences</a></li>
         <li><a href="{% url 'event-search' %}">Search</a></li>
         <li><a href="{% url 'view-messages' %}">Message</a></li>
-        <li><a href="{% url 'map-show' %}">Map</a></li>
-        <li><a href="javascript:void(0);" onclick="getLocationAndSubmit()">Nearest</a></li>
+        <li><a href="javascript:void(0);" onclick="getLocationAndSubmit_map()">Map</a></li>
+        <form id="location_map" method="post" action="{% url 'map-show' %}" style="display:none;">
+            {% csrf_token %}
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+        </form>
+        <script>
+            function getLocationAndSubmit_map() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        // Set the latitude and longitude in the form
+                        document.getElementById('latitude').value = position.coords.latitude;
+                        document.getElementById('longitude').value = position.coords.longitude;
+                        
+                        // Submit the form
+                        document.getElementById('location_map').submit();
+                    });
+                } else { 
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+        </script>
+
+        <li><a href="javascript:void(0);" onclick="getLocationAndSubmit_nearest()">Nearest</a></li>
+        <form id="location_nearest" method="post" action="{% url 'nearest' %}" style="display:none;">
+            {% csrf_token %}
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+        </form>
+        <script>
+            function getLocationAndSubmit_nearest() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        // Set the latitude and longitude in the form
+                        document.getElementById('latitude').value = position.coords.latitude;
+                        document.getElementById('longitude').value = position.coords.longitude;
+                        
+                        // Submit the form
+                        document.getElementById('location_nearest').submit();
+                    });
+                } else { 
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+        </script>
         {% endif %}
     </ul>
     
@@ -109,28 +152,6 @@
         {% endif %}
     </div>
 </nav>
-
-<form id="locationForm" method="post" action="{% url 'nearest' %}" style="display:none;">
-    {% csrf_token %}
-    <input type="hidden" name="latitude" id="latitude">
-    <input type="hidden" name="longitude" id="longitude">
-</form>
-<script>
-    function getLocationAndSubmit() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                // Set the latitude and longitude in the form
-                document.getElementById('latitude').value = position.coords.latitude;
-                document.getElementById('longitude').value = position.coords.longitude;
-                
-                // Submit the form
-                document.getElementById('locationForm').submit();
-            });
-        } else { 
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-</script>
 
 <!-- Your main content goes here -->
 <main>

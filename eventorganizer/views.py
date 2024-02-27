@@ -126,83 +126,91 @@ def map_show(request):
     current_date = date.today() 
     if request.method == 'POST':
         place_name = request.POST.get('place_name')
-        place_name = place_name.lower()
-        try:
-            json_file_path = 'media/coordinates.json'
-            with open(json_file_path, 'r') as file:
-                coordinates_data = json.load(file)
-            coordinates = coordinates_data[place_name]["Coordinates"]
-            location_geojson = {
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "type": "Feature",
-                        "properties": {},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [coordinates]
-                        }
-                    }
-                ]
-            }
-            data_array = np.array(coordinates)
-            mean = np.mean(data_array, axis=0)
-            reverse = mean[::-1]
-            place_location = reverse.tolist()
-            location_map = folium.Map(location=place_location, zoom_start=10, tiles='OpenStreetMap', control_scale=True)
-            location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { background-color: skyblue; filter: grayscale(60%); }</style>'))
-            GeoJson(
-                    location_geojson,
-                    name=place_name,
-                    style_function=lambda feature: {
-                        'fillColor': 'skyblue',
-                        'color': 'red',
-                        'weight': 3,
-                        'fillOpacity': 0.33,
-                    },
-                ).add_to(location_map)
-        except:
-            return redirect("map-show")
-        
-        event_locations = Event.objects.filter(date__gte=current_date)
-        for i in event_locations:
-            title = i.title
-            description = i.description
-            latitude = i.latitude
-            longitude = i.longitude
-            event_coordinate = [latitude, longitude]
-            distance = geodesic(place_location, event_coordinate).km
-            radius_in_km = 100
-            if distance <= radius_in_km:
-                folium.Marker(location=event_coordinate, popup=folium.Popup(f"{title} ", parse_html=True, show=True, permanent=True)).add_to(location_map)
-        map_html = location_map._repr_html_()
-        context = {'map_html': map_html}
-        return render(request, 'normal/map.html', context)
-    
-    else:
-        location = [28.150875468598606, 84.462890625]
-        location_map = folium.Map(location=location, zoom_start=8, tiles='OpenStreetMap', control_scale=True)
-        location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
-        locations = Event.objects.filter(date__gte=current_date)
-        for i in locations:
-            title = i.title
-            latitude = i.latitude
-            longitude = i.longitude
-            location_coords = [latitude, longitude]
-            folium.Marker(location=location_coords, popup=folium.Popup(f"{title}", parse_html=True, show=True, permanent=True)).add_to(location_map)
-        map_html = location_map._repr_html_()
-        context = {'map_html': map_html}
-        return render(request, 'normal/map.html', context)
-    
 
+        if place_name == None:
+            location = [28.150875468598606, 84.462890625]
+            location_map = folium.Map(location=location, zoom_start=8, tiles='OpenStreetMap', control_scale=True)
+            location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { filter: hue-rotate(100deg) brightness(90%) saturate(100%); }</style>'))
+            locations = Event.objects.filter(date__gte=current_date)
+            for i in locations:
+                title = i.title
+                latitude = i.latitude
+                longitude = i.longitude
+                location_coords = [latitude, longitude]
+                folium.Marker(location=location_coords, popup=folium.Popup(f"{title}", parse_html=True, show=True, permanent=True)).add_to(location_map)
+            
+            try:
+                latitude = request.POST.get('latitude')
+                longitude = request.POST.get('longitude')
+                place_location = [latitude, longitude]
+                folium.Marker(location=place_location, popup=folium.Popup("You", parse_html=True, show=True, permanent=True), icon=folium.Icon(color='red')).add_to(location_map)
+            except:
+                pass
+
+            map_html = location_map._repr_html_()
+            context = {'map_html': map_html}
+            return render(request, 'normal/map.html', context)
+            
+        else:
+            place_name = place_name.lower()
+            try:
+                json_file_path = 'media/coordinates.json'
+                with open(json_file_path, 'r') as file:
+                    coordinates_data = json.load(file)
+                coordinates = coordinates_data[place_name]["Coordinates"]
+                location_geojson = {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": {},
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [coordinates]
+                            }
+                        }
+                    ]
+                }
+                data_array = np.array(coordinates)
+                mean = np.mean(data_array, axis=0)
+                reverse = mean[::-1]
+                place_location = reverse.tolist()
+                location_map = folium.Map(location=place_location, zoom_start=10, tiles='OpenStreetMap', control_scale=True)
+                location_map.get_root().html.add_child(folium.Element('<style>.leaflet-container { background-color: skyblue; filter: grayscale(60%); }</style>'))
+                GeoJson(
+                        location_geojson,
+                        name=place_name,
+                        style_function=lambda feature: {
+                            'fillColor': 'skyblue',
+                            'color': 'red',
+                            'weight': 3,
+                            'fillOpacity': 0.33,
+                        },
+                    ).add_to(location_map)
+            except:
+                return redirect("dashboard")
+            
+            event_locations = Event.objects.filter(date__gte=current_date)
+            for i in event_locations:
+                title = i.title
+                latitude = i.latitude
+                longitude = i.longitude
+                event_coordinate = [latitude, longitude]
+                distance = geodesic(place_location, event_coordinate).km
+                radius_in_km = 100
+                if distance <= radius_in_km:
+                    folium.Marker(location=event_coordinate, popup=folium.Popup(f"{title} ", parse_html=True, show=True, permanent=True)).add_to(location_map)
+            map_html = location_map._repr_html_()
+            context = {'map_html': map_html}
+            return render(request, 'normal/map.html', context)
+    else:
+        return redirect("dashboard")
+        
 def nearest(request):
     if request.method == 'POST':
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         place_location = [latitude, longitude]
-        print(latitude)
-        print(longitude)
-        print(place_location)
         current_date = date.today() 
         event_locations = Event.objects.filter(date__gte=current_date)
 
