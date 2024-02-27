@@ -209,7 +209,9 @@ def map_show(request):
 def nearest(request):
     if request.method == 'POST':
         latitude = request.POST.get('latitude')
+        print(latitude,"============================================")
         longitude = request.POST.get('longitude')
+        print(latitude,"============================================")
         place_location = [latitude, longitude]
         current_date = date.today() 
         event_locations = Event.objects.filter(date__gte=current_date)
@@ -221,6 +223,9 @@ def nearest(request):
             longitude = i.longitude
             event_coordinate = [latitude, longitude]
             distance = geodesic(place_location, event_coordinate).km
+            print(place_location)
+            print(event_coordinate)
+            print(distance)
             radius_in_km = 50
 
             event_data = {

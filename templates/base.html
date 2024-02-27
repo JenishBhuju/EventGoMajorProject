@@ -97,19 +97,20 @@
         <li><a href="{% url 'update-preferences' %}">Preferences</a></li>
         <li><a href="{% url 'event-search' %}">Search</a></li>
         <li><a href="{% url 'view-messages' %}">Message</a></li>
+
         <li><a href="javascript:void(0);" onclick="getLocationAndSubmit_map()">Map</a></li>
         <form id="location_map" method="post" action="{% url 'map-show' %}" style="display:none;">
             {% csrf_token %}
-            <input type="hidden" name="latitude" id="latitude">
-            <input type="hidden" name="longitude" id="longitude">
+            <input type="hidden" name="latitude" id="latitude_map">
+            <input type="hidden" name="longitude" id="longitude_map">
         </form>
         <script>
             function getLocationAndSubmit_map() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         // Set the latitude and longitude in the form
-                        document.getElementById('latitude').value = position.coords.latitude;
-                        document.getElementById('longitude').value = position.coords.longitude;
+                        document.getElementById('latitude_map').value = position.coords.latitude;
+                        document.getElementById('longitude_map').value = position.coords.longitude;
                         
                         // Submit the form
                         document.getElementById('location_map').submit();
@@ -123,16 +124,16 @@
         <li><a href="javascript:void(0);" onclick="getLocationAndSubmit_nearest()">Nearest</a></li>
         <form id="location_nearest" method="post" action="{% url 'nearest' %}" style="display:none;">
             {% csrf_token %}
-            <input type="hidden" name="latitude" id="latitude">
-            <input type="hidden" name="longitude" id="longitude">
+            <input type="hidden" name="latitude" id="latitude_nearest">
+            <input type="hidden" name="longitude" id="longitude_nearest">
         </form>
         <script>
             function getLocationAndSubmit_nearest() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         // Set the latitude and longitude in the form
-                        document.getElementById('latitude').value = position.coords.latitude;
-                        document.getElementById('longitude').value = position.coords.longitude;
+                        document.getElementById('latitude_nearest').value = position.coords.latitude;
+                        document.getElementById('longitude_nearest').value = position.coords.longitude;
                         
                         // Submit the form
                         document.getElementById('location_nearest').submit();
@@ -142,6 +143,7 @@
                 }
             }
         </script>
+
         {% endif %}
     </ul>
     
