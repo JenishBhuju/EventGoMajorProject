@@ -18,8 +18,14 @@ class Event(models.Model):
     location = models.CharField(max_length=100)  # Storing location as string
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return self.title
+    
+    def delete(self, *args, **kwargs):
+        self.eventcategory_set.all().delete()
+        self.message_set.all().delete()
+        super().delete(*args, **kwargs)
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

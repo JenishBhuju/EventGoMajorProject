@@ -4,21 +4,17 @@
 
 {% block content %}
     <style>
-        /* body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
-    margin: 0;
-    padding: 0;
-} */
 
 .msg{
     text-align: center;
     color: #333;
+    position: relative;
 }
 
 .listulmsg {
     list-style-type: none;
     padding: 0;
+    position: relative;
 }
 
 .listmsg {
@@ -58,7 +54,42 @@ strong {
     font-size: 0.9em;
 }
 
+main {
+    position:static;
+  }
+.background {
+background: url('https://images.pexels.com/photos/1095624/pexels-photo-1095624.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260')
+  center top no-repeat #252746;
+background-size: cover;
+display: block;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
+
+.background-texture {
+background: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  from(#0f0140e6),
+  to(rgba(255, 214, 117, 0.9))
+);
+background: linear-gradient(to top, #0f0140e6, rgba(255, 214, 117, 0.9));
+background-size: cover;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
     </style>
+    <div class="background"></div>
+    <div class="background-texture"></div>
     <h1 class="msg">Messages</h1>
     <ul class="listulmsg">
         {% for message in messages %}

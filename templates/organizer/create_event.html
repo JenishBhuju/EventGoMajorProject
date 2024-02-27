@@ -13,6 +13,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin-top: 2%;
         margin-bottom: 3%;
+        position: relative;
     }
 
     /* Form group */
@@ -49,6 +50,20 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+    .btn-secondary {
+    background-color: #6c757d; /* A grayish color */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* Removes underline from link */
+}
+
+.btn-secondary:hover {
+    background-color: #545b62; /* A slightly darker gray for hover effect */
+}
+
 
     .mapshow{
         height: 400px;
@@ -56,9 +71,43 @@
         background-color: #f5d47a;
         margin-bottom: 8px;
     }
+    main {
+    position:static;
+  }
+.background {
+background: url('https://images.pexels.com/photos/1095624/pexels-photo-1095624.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260')
+  center top no-repeat #252746;
+background-size: cover;
+display: block;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
+
+.background-texture {
+background: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  from(#0f0140e6),
+  to(rgba(255, 214, 117, 0.9))
+);
+background: linear-gradient(to top, #0f0140e6, rgba(255, 214, 117, 0.9));
+background-size: cover;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
 
 </style>
-
+<div class="background"></div>
+  <div class="background-texture"></div>
 <div class="form-container">
     <h1>Create Event</h1>
     <form method="post" enctype="multipart/form-data">
@@ -101,9 +150,11 @@
         </div>
         
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
         
     </form>
 </div>
+
 
 <script>
     var mymap = L.map('mapshow').setView([27.704159070685197, 85.31742095947267], 11); // Set to your default location
@@ -127,6 +178,7 @@
         console.log(lng);
     }
     mymap.on('click', onMapClick);
+        
 </script>
 
 {% endblock %}

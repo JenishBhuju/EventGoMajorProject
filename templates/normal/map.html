@@ -3,8 +3,74 @@
 {% block title %}Map{% endblock %}
 
 {% block content %}
+<style>
+/* CSS for input field */
+input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 200px; /* Adjust width as needed */
+  outline: none;
+  position: relative;
+}
+
+/* CSS for submit button */
+button[type="submit"] {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff; /* Blue color, change as needed */
+  color: #fff; /* White text color */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+/* Hover effect for submit button */
+button[type="submit"]:hover {
+  background-color: #0056b3; /* Darker blue color on hover */
+}
+main {
+    position:static;
+  }
+.background {
+background: url('https://images.pexels.com/photos/1095624/pexels-photo-1095624.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260')
+  center top no-repeat #252746;
+background-size: cover;
+display: block;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
+
+.background-texture {
+background: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  from(#0f0140e6),
+  to(rgba(255, 214, 117, 0.9))
+);
+background: linear-gradient(to top, #0f0140e6, rgba(255, 214, 117, 0.9));
+background-size: cover;
+width: 100%;
+height: 65rem;
+position: absolute;
+z-index: 0;
+top: 0;
+left: 0;
+}
+
+</style>
+<div class="background"></div>
+  <div class="background-texture"></div>
 <div style="text-align: center; margin-bottom: 20px;">
-    <form action="{% url 'map-show' %}" method="POST" style="display: inline-block; margin-top: 20px;">
+    <form action="{% url 'map-show' %}" method="POST" style="display: inline-block; margin-top: 20px; position: relative;">
         {% csrf_token %}
         <input type="text" name="place_name" placeholder=" Search Places...">
         <button type="submit">Search</button>

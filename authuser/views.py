@@ -3,13 +3,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse
 from eventorganizer.forms import UserPreferenceForm
 from eventorganizer.models import Event, Preference, UserPreference
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
+from django.utils import timezone
+from datetime import date
 
 def login_view(request):
     if request.method == 'POST':
@@ -32,13 +33,20 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)  # Save the form data without committing to the database yet
-            user.password = make_password(form.cleaned_data['password'])  # Explicitly hash the password
-            user.save()  # Now save the user with the hashed password
-            return redirect('login') 
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            
+            # Check user type and redirect accordingly
+            if user.user_type == 'organizer':
+                login(request, user)
+                return redirect('event-list')
+            elif user.user_type == 'normal':
+                    login(request, user)
+                    return redirect('save_preferences')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -47,9 +55,21 @@ def logout_view(request):
 
 @login_required
 def event_list(request):
+    current_date = timezone.now().date()
     # Retrieve events related to the logged-in user
     events = Event.objects.filter(user_id=request.user)
-    return render(request, 'organizer/event_list.html', {'events': events})
+    past_events = events.filter(date__lt=current_date)
+    upcoming_events = events.filter(date__gte=current_date)
+    event_created = request.session.pop('event_created', False)
+    event_deleted = request.session.pop('event_deleted', False)
+    event_updated = request.session.pop('event_updated', False)
+    return render(request, 'organizer/event_list.html', {
+        'past_events': past_events,
+        'upcoming_events': upcoming_events,
+        'event_created': event_created,
+        'event_deleted': event_deleted,
+        'event_updated': event_updated
+    })
 
 @login_required
 def dashboard(request):
@@ -60,17 +80,18 @@ def dashboard(request):
     user_preferences = UserPreference.objects.filter(user_id=user)
     user_category_names = [preference.preference_id.name for preference in user_preferences]
     
-    # Filter events based on user preferences
+    # Filter events based on user preferences and date
     matched_events = []
-    unmatched_events = []
-    for event in Event.objects.all():
-        event_category_names = event.categories.values_list('name', flat=True)
-        if any(category_name in user_category_names for category_name in event_category_names):
-            matched_events.append(event)
-        else:
-            unmatched_events.append(event)
+    all_events = []
+    current_date = date.today()
     
-    return render(request, 'normal/dashboard.html', {'matched_events': matched_events, 'unmatched_events': unmatched_events})
+    for event in Event.objects.filter(date__gte=current_date):
+        event_category_names = event.categories.values_list('name', flat=True)
+        all_events.append(event)  # Add all events to the all_events list
+        if any(category_name in user_category_names for category_name in event_category_names):
+            matched_events.append(event)  # Add matched events to the matched_events list
+    
+    return render(request, 'normal/dashboard.html', {'matched_events': matched_events, 'all_events': all_events})
 
 def save_user_preferences(request):
     preferences = Preference.objects.all()  # Retrieve all preferences

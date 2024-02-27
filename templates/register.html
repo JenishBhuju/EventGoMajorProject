@@ -26,12 +26,19 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        input[type="text"],
-        input[type="password"],
-        input[type="email"]  {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="email"],
+        .form-group select {
             width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
@@ -53,15 +60,41 @@
 </head>
 <body>
     <div class="container">
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-    <form action="{% url 'login' %}" method="get">
-        <button type="submit">Back</button>
-    </form>
-</div>
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username:</label>
+                <input type="text" id="id_username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="id_user_type">User Type:</label>
+                <select id="id_user_type" name="user_type">
+                    <option value="organizer">Organizer</option>
+                    <option value="normal">Normal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_full_name">Full Name:</label>
+                <input type="text" id="id_full_name" name="full_name">
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email:</label>
+                <input type="email" id="id_email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="id_phone">Phone:</label>
+                <input type="text" id="id_phone" name="phone">
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password:</label>
+                <input type="password" id="id_password" name="password">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <form action="{% url 'login' %}" method="get">
+            <button type="submit">Back</button>
+        </form>
+    </div>
 </body>
 </html>
