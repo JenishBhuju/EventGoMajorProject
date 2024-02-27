@@ -172,8 +172,10 @@ left: 0;
     {% if request.user.is_authenticated and request.user.is_organizer %}
     <a href="{% url 'update-event' event.id %}" class="btn btn-primary">Update</a>
     <a href="{% url 'delete-event' event.id %}" class="btn btn-danger">Delete</a> 
+    <a href="{% url 'event-list' %}" class="btn btn-secondary">Back</a>
 {% endif %}
+{% if request.user.is_authenticated and request.user.is_normal %}
 <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
-
+{% endif %}
 </div>
 {% endblock %}

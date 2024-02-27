@@ -11,6 +11,54 @@ class EventForm(forms.ModelForm):
             'categories': forms.CheckboxSelectMultiple(),
             'date': forms.DateInput(attrs={'type': 'date'})
         }
+    
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if not title:
+            raise forms.ValidationError('Title is required.')
+        return title
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if not description:
+            raise forms.ValidationError('Description is required.')
+        return description
+
+    # def clean_logo(self):
+    #     logo = self.cleaned_data.get('logo')
+    #     if not logo:
+    #         raise forms.ValidationError('Logo is required.')
+    #     return logo
+
+    def clean_date(self):
+        date = self.cleaned_data.get('date')
+        if not date:
+            raise forms.ValidationError('Date is required.')
+        return date
+
+    def clean_address(self):
+        address = self.cleaned_data.get('address')
+        if not address:
+            raise forms.ValidationError('Address is required.')
+        return address
+
+    def clean_categories(self):
+        categories = self.cleaned_data.get('categories')
+        if not categories:
+            raise forms.ValidationError('At least one category must be selected.')
+        return categories
+
+    def clean_latitude(self):
+        latitude = self.cleaned_data.get('latitude')
+        if latitude is None:
+            raise forms.ValidationError('Latitude is required.')
+        return latitude
+
+    def clean_longitude(self):
+        longitude = self.cleaned_data.get('longitude')
+        if longitude is None:
+            raise forms.ValidationError('Longitude is required.')
+        return longitude
 
     def save(self, commit=True):
         event = super().save(commit=commit)

@@ -72,6 +72,7 @@ def update_event(request, event_id):
             
     else:
         form = EventForm(instance=event)
+    
     return render(request, 'organizer/update_event.html', {'form': form, 'event': event})
 
 @login_required

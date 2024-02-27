@@ -104,7 +104,9 @@ z-index: 0;
 top: 0;
 left: 0;
 }
-
+.text-danger {
+        color: red;
+    }
 </style>
 <div class="background"></div>
   <div class="background-texture"></div>
@@ -115,22 +117,47 @@ left: 0;
         <div class="form-group">
             <label for="{{ form.title.id_for_label }}">Title:</label>
             {{ form.title }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
         <div class="form-group">
             <label for="{{ form.description.id_for_label }}">Description:</label>
             {{ form.description }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
         <div class="form-group">
             <label for="{{ form.date.id_for_label }}">Date:</label>
             {{ form.date }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
         <div class="form-group">
             <label for="{{ form.address.id_for_label }}">Address:</label>
             {{ form.address }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
         <div class="form-group">
             <label for="{{ form.logo.id_for_label }}">Image:</label>
             {{ form.logo }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
         <div class="form-group">
             <label>Categories:</label>
@@ -139,6 +166,11 @@ left: 0;
                     <label>
                         {{ category.tag }} {{ category.choice_label }}
                     </label>
+                </div>
+            {% endfor %}
+            {% for error in form.categories.errors %}
+                <div class="text-danger">
+                    {{ error }}
                 </div>
             {% endfor %}
         </div>
@@ -150,7 +182,7 @@ left: 0;
         </div>
         
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+        <a href="{% url 'event-list' %}"  class="btn btn-secondary">Back</a>
         
     </form>
 </div>

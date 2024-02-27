@@ -56,3 +56,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def is_organizer(self):
         return self.user_type == 'organizer'
+    
+    def is_normal(self):
+        return self.user_type == 'normal'
