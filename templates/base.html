@@ -98,8 +98,10 @@
         <li><a href="{% url 'event-search' %}">Search</a></li>
         <li><a href="{% url 'view-messages' %}">Message</a></li>
         <li><a href="{% url 'map-show' %}">Map</a></li>
+        <li><a href="javascript:void(0);" onclick="getLocationAndSubmit()">Nearest</a></li>
         {% endif %}
     </ul>
+    
     <div>
         {% if user.is_authenticated %}
             <span class="username"> {{ user.username }}</span>
@@ -108,13 +110,34 @@
     </div>
 </nav>
 
+<form id="locationForm" method="post" action="{% url 'nearest' %}" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+</form>
+<script>
+    function getLocationAndSubmit() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Set the latitude and longitude in the form
+                document.getElementById('latitude').value = position.coords.latitude;
+                document.getElementById('longitude').value = position.coords.longitude;
+                
+                // Submit the form
+                document.getElementById('locationForm').submit();
+            });
+        } else { 
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+</script>
+
 <!-- Your main content goes here -->
 <main>
     <div class="main-container">
         {% block content %}
         {% endblock %}
     </div>
-    
 </main>
 
 <footer>

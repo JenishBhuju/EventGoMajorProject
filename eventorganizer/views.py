@@ -8,7 +8,7 @@ from .models import Category, Event,Preference
 from .forms import EventForm,UserPreferenceForm
 from django.contrib.auth.decorators import login_required  
 from django.shortcuts import render, redirect, get_object_or_404
-import paho.mqtt.publish as publish
+# import paho.mqtt.publish as publish
 import folium
 from folium import GeoJson
 from geopy.distance import geodesic
@@ -37,13 +37,13 @@ def create_event(request):
                 events_sent_key = f"events_sent_{user.username}"
                 events_sent = cache.get(events_sent_key, set())
 
-                for event in Event.objects.exclude(id__in=events_sent):
-                    event_category_names = event.categories.values_list('name', flat=True)
-                    if any(category_name in user_category_names for category_name in event_category_names):
-                        message_content = f"New event created: {event.title}"
-                        message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
-                        publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
-                        events_sent.add(event.id)  # Mark event as sent
+                # for event in Event.objects.exclude(id__in=events_sent):
+                #     event_category_names = event.categories.values_list('name', flat=True)
+                #     if any(category_name in user_category_names for category_name in event_category_names):
+                #         message_content = f"New event created: {event.title}"
+                #         message = Message.objects.create(sender=request.user, recipient=user, event=event, content=message_content)
+                #         publish.single(f"events/{user.username}", payload=message_content, hostname="localhost")
+                #         events_sent.add(event.id)  # Mark event as sent
 
                 cache.set(events_sent_key, events_sent)
 
@@ -193,4 +193,37 @@ def map_show(request):
         map_html = location_map._repr_html_()
         context = {'map_html': map_html}
         return render(request, 'normal/map.html', context)
+    
+
+def nearest(request):
+    if request.method == 'POST':
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        place_location = [latitude, longitude]
+        print(latitude)
+        print(longitude)
+        print(place_location)
+        current_date = date.today() 
+        event_locations = Event.objects.filter(date__gte=current_date)
+
+        distance_50km = []
+        distance_50plus = []
+        for i in event_locations:
+            latitude = i.latitude
+            longitude = i.longitude
+            event_coordinate = [latitude, longitude]
+            distance = geodesic(place_location, event_coordinate).km
+            radius_in_km = 50
+
+            event_data = {
+                            'event': i,
+                            'distance': distance,
+                        }
+            
+            if distance <= radius_in_km:
+                distance_50km.append(event_data)
+            else:
+                distance_50plus.append(event_data)
+        context = {'distance_50km': distance_50km, 'distance_50plus': distance_50plus}
+        return render(request, 'normal/nearest.html', context)
     

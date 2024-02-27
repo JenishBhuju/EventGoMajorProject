@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Available Event List{% endblock %}
@@ -222,64 +223,56 @@ margin: 5px 0;
 
 <div class="background"></div>
   <div class="background-texture"></div>
-  <h3>Available Event List</h3>
-  <h2>Events of your taste :</h2>
+  <h2>Event in 50km radius</h2>
   <section class="carousel">
     <div class="carousel__container">
-      {% for event in matched_events %}
+      {% for item in distance_50km %}
   
       <div class="carousel-item">
         <img
           class="carousel-item__img"
-          src="{{ event.logo.url }}"
-          alt="{{ event.title }} Logo"
+          src="{{ item.event.logo.url }}"
+          alt="{{ item.event.title }} Logo"
         />
         <div class="carousel-item__details">
           <div class="controls">
            
-              <a href="{% url 'event-detail' event.id %}" class="viewbutton">Details</a>
+              <a href="{% url 'event-detail' item.event.id %}" class="viewbutton">Details</a>
             
           </div>
-          <h5 class="carousel-item__details--title">{{ event.title }}</h5>
-          <h6 class="carousel-item__details--subtitle">{{ event.address }}</h6>
-          <h6 class="carousel-item__details--subtitle">{{ event.date }}</h6>
+          <h5 class="carousel-item__details--title">{{ item.event.title }}</h5>
+          <h6 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h6>
+          <h6 class="carousel-item__details--subtitle">{{ item.event.address }}</h6>
+          <h6 class="carousel-item__details--subtitle">{{ item.event.date }}</h6>
         </div>
       </div>
       {% empty %}
       <div class="errorshow">
-        <h3>There are no events that are available right now according to your taste.......</h3>
+        <h3>There are no events that are available in 50km radius.......</h3>
       </div>
       {% endfor %}
     </div>
   </section> 
   
-  <h2>All Events :</h2>
+  <h2>Event beyond 50km radius</h2>
   <section class="carousel">
     <div class="carousel__container">
-    {% for event in all_events %}
-  
+      {% for item in distance_50plus %}
       <div class="carousel-item">
-        <img
-          class="carousel-item__img"
-          src="{{ event.logo.url }}"
-          alt="{{ event.title }} Logo"
-        />
+        <img class="carousel-item__img" src="{{ item.event.logo.url }}" alt="{{ item.event.title }} Logo" />
         <div class="carousel-item__details">
           <div class="controls">
-           
-              <a href="{% url 'event-detail' event.id %}" class="viewbutton">Details</a>
-            
+            <a href="{% url 'event-detail' item.event.id %}" class="viewbutton">Details</a>
           </div>
-          <h5 class="carousel-item__details--title">{{ event.title }}</h5>
-          <h6 class="carousel-item__details--subtitle">{{ event.address }}</h6>
-          <h6 class="carousel-item__details--subtitle">{{ event.date }}</h6>
+          <h5 class="carousel-item__details--title">{{ item.event.title }}</h5>
+          <h6 class="carousel-item__details--subtitle">Distance: {{ item.distance|floatformat:2 }} km</h6>
+          <h6 class="carousel-item__details--subtitle">{{ item.event.address }}</h6>
+          <h6 class="carousel-item__details--subtitle">{{ item.event.date }}</h6>
         </div>
       </div>
-    {% endfor %}
+      {% endfor %}
     </div>
   </section> 
   
-   
-
-    
 {% endblock %}
+

@@ -9,4 +9,5 @@ urlpatterns = [
     path('search/', views.event_search, name='event-search'),
     path('messages/', views.view_messages, name='view-messages'),
     path('map/', views.map_show, name='map-show'),
+    path('nearest/', views.nearest, name='nearest'),
 ]
