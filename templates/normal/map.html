@@ -65,19 +65,44 @@ z-index: 0;
 top: 0;
 left: 0;
 }
-
 </style>
+
 <div class="background"></div>
-  <div class="background-texture"></div>
+<div class="background-texture"></div>
 <div style="text-align: center; margin-bottom: 20px;">
-    <form action="{% url 'map-show' %}" method="POST" style="display: inline-block; margin-top: 20px; position: relative;">
-        {% csrf_token %}
-        <input type="text" name="place_name" placeholder=" Search Places...">
-        <button type="submit">Search</button>
-    </form>
+  <form action="{% url 'map-show' %}" method="POST" style="display: inline-block; margin-top: 20px; position: relative;" id="location_search">
+      {% csrf_token %}
+      <input type="text" name="place_name" placeholder="Search Places...">
+      <input type="hidden" name="latitude" id="latitude_search">
+      <input type="hidden" name="longitude" id="longitude_search">
+      <button type="submit">Search</button>
+  </form>
 </div>
 <div>
     {{ map_html|safe }}
 </div>
+<script>
+document.getElementById('location_search').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting immediately.
+    const form = this; // 'this' refers to the form itself.
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            // Set the latitude and longitude in the form
+            document.getElementById('latitude_search').value = position.coords.latitude;
+            document.getElementById('longitude_search').value = position.coords.longitude;
+
+            // Now, submit the form programmatically
+            form.submit();
+        }, function(error) {
+            alert("Error obtaining location: " + error.message);
+            // Optionally handle the error, e.g., submit form without geolocation data.
+        });
+    } else { 
+        alert("Geolocation is not supported by this browser.");
+        // Optionally handle the case, e.g., submit form without geolocation data.
+    }
+});
+</script>
 {% endblock %}
 
